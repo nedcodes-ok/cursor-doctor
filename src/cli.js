@@ -98,6 +98,10 @@ function showHelp() {
     DIM + '  npx cursor-doctor activate <key>  Activate license' + RESET,
     DIM + '  npx cursor-doctor-mcp             MCP server (for AI assistants)' + RESET,
     '',
+    'Options:',
+    '  --ignore=<patterns>  Suppress warnings matching patterns (comma-separated)',
+    '                       Example: --ignore=vague,empty-globs',
+    '',
     'Pro: $9 one-time — ' + PURCHASE_URL + '?utm_source=cli&utm_medium=npx&utm_campaign=help',
     '',
   ];
@@ -275,6 +279,24 @@ async function main() {
   // --- lint (free) ---
   if (command === 'lint') {
     var results = await lintProject(cwd);
+
+    // --ignore: suppress specific warning patterns
+    var ignoreArg = args.find(function(a) { return a.startsWith('--ignore='); });
+    var ignorePatterns = [];
+    if (ignoreArg) {
+      ignorePatterns = ignoreArg.slice(9).split(',').map(function(p) { return p.trim().toLowerCase(); });
+    }
+    if (ignorePatterns.length > 0) {
+      results = results.map(function(r) {
+        return {
+          file: r.file,
+          issues: r.issues.filter(function(iss) {
+            var msgLower = iss.message.toLowerCase();
+            return !ignorePatterns.some(function(pat) { return msgLower.includes(pat); });
+          }),
+        };
+      });
+    }
 
     if (asJson) {
       var jsonResults = results.map(function(r) {

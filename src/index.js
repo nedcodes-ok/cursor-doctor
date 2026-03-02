@@ -43,7 +43,7 @@ function findVagueRules(content) {
       if (after.startsWith('with ') || after.startsWith('for ') || after.startsWith('in ') ||
           after.startsWith('by ') || after.startsWith('using ') || after.startsWith('according to ') ||
           after.startsWith('and ')) continue;
-      issues.push({ severity: 'warning', message: `Vague rule detected: "${pattern}"`, line: vi + 1 });
+      issues.push({ severity: 'warning', message: `Vague rule detected: "${pattern}"`, line: vi + 1, hint: `Replace with a specific instruction. Instead of "${pattern}", say exactly what to do: what tool, what pattern, what format.` });
       break;
     }
   }
@@ -107,11 +107,11 @@ async function lintMdcFile(filePath) {
     // alwaysApply check: only flag if BOTH alwaysApply is missing/undefined AND no globs are set
     var hasGlobs = fm.data.globs && (Array.isArray(fm.data.globs) ? fm.data.globs.length > 0 : parseGlobs(fm.data.globs).length > 0);
     if (fm.data.alwaysApply === undefined && !hasGlobs) {
-      issues.push({ severity: 'warning', message: 'No alwaysApply or globs set — rule may only apply when manually referenced', hint: 'Add alwaysApply: true for global rules, or add globs to scope to specific files' });
+      issues.push({ severity: 'warning', message: 'No alwaysApply or globs set — rule may only apply when manually referenced', hint: 'Add alwaysApply: true to load this rule on every request. Or add globs: ["**/*.ts"] to load only for matching files.' });
     }
     var descEmpty = !fm.data.description || (typeof fm.data.description === 'string' && fm.data.description.trim() === '') || (Array.isArray(fm.data.description) && fm.data.description.length === 0);
     if (descEmpty) {
-      issues.push({ severity: 'warning', message: 'Missing or empty description in frontmatter', hint: 'Add a description so Cursor knows when to apply this rule' });
+      issues.push({ severity: 'warning', message: 'Missing or empty description in frontmatter', hint: 'Add description: "TypeScript conventions" (or similar). Cursor uses this to decide when to apply the rule.' });
     }
     // Non-functional rule: alwaysApply is explicitly false and no globs
     if (fm.data.alwaysApply === false && !hasGlobs) {
@@ -230,6 +230,7 @@ async function lintMdcFile(filePath) {
         issues.push({
           severity: 'warning',
           message: 'Glob pattern has no file extension after dot',
+          hint: 'Add a file extension: "*." should be "*.ts", "*.js", etc. Or use "**/*" to match all files.',
         });
       }
 
@@ -944,7 +945,7 @@ async function lintMdcFile(filePath) {
       issues.push({
         severity: 'warning',
         message: 'Empty globs array',
-        hint: 'globs: [] is set but empty. Remove globs or add patterns.',
+        hint: 'globs: [] means this rule has no file targets. Either add patterns like globs: ["**/*.ts", "**/*.tsx"] or remove globs and set alwaysApply: true.',
       });
     }
   }
@@ -1179,7 +1180,7 @@ async function lintCursorrules(filePath) {
   issues.push({
     severity: 'warning',
     message: '.cursorrules may be ignored in agent mode',
-    hint: 'Use .cursor/rules/*.mdc with alwaysApply: true for agent mode compatibility',
+    hint: 'Convert to .mdc format: npx cursor-doctor migrate. This moves your rules to .cursor/rules/*.mdc where Cursor always reads them.',
   });
 
   // Vague rules (context-aware)
@@ -1485,7 +1486,7 @@ async function lintProject(dir) {
   if (results.length === 0) {
     results.push({
       file: dir,
-      issues: [{ severity: 'warning', message: 'No Cursor rules or agent skills found in this directory' }],
+      issues: [{ severity: 'warning', message: 'No Cursor rules or agent skills found in this directory', hint: 'Create rules with: npx cursor-doctor init, or generate from your codebase with: npx rulegen-ai' }],
     });
   }
 

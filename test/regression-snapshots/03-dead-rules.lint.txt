@@ -4,18 +4,19 @@ cursor-doctor vX.X.X -- lint
 
 .cursor/rules/coding.mdc  (1 error, 3 warnings)
   ⚠ Missing or empty description in frontmatter
-    → Add a description so Cursor knows when to apply this rule
+    → Add description: "TypeScript conventions" (or similar). Cursor uses this to decide when to apply the rule.
   ⚠ Vague rule detected: "follow solid principles" (line 7)
+    → Replace with a specific instruction. Instead of "follow solid principles", say exactly what to do: what tool, what pattern, what format.
   ⚠ Empty globs array
-    → globs: [] is set but empty. Remove globs or add patterns.
+    → globs: [] means this rule has no file targets. Either add patterns like globs: ["**/*.ts", "**/*.tsx"] or remove globs and set alwaysApply: true.
   ✗ Rule will never load: alwaysApply is false and no globs are set
     → Set alwaysApply: true for global rules, or add globs to scope to specific files
 
 .cursor/rules/workflow.mdc  (1 error, 2 warnings)
   ⚠ Missing or empty description in frontmatter
-    → Add a description so Cursor knows when to apply this rule
+    → Add description: "TypeScript conventions" (or similar). Cursor uses this to decide when to apply the rule.
   ⚠ Empty globs array
-    → globs: [] is set but empty. Remove globs or add patterns.
+    → globs: [] means this rule has no file targets. Either add patterns like globs: ["**/*.ts", "**/*.tsx"] or remove globs and set alwaysApply: true.
   ✗ Rule will never load: alwaysApply is false and no globs are set
     → Set alwaysApply: true for global rules, or add globs to scope to specific files
 

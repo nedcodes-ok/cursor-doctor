@@ -4,7 +4,7 @@ cursor-doctor vX.X.X -- lint
 
 .cursorrules  (1 warning)
   ⚠ .cursorrules may be ignored in agent mode
-    → Use .cursor/rules/*.mdc with alwaysApply: true for agent mode compatibility
+    → Convert to .mdc format: npx cursor-doctor migrate. This moves your rules to .cursor/rules/*.mdc where Cursor always reads them.
 
 ──────────────────────────────────────────────────
 1 warning

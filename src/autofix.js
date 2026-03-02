@@ -766,10 +766,14 @@ async function autoFix(dir, options = {}) {
     }
     
     // Legacy frontmatter fixer (for cases not covered by new fixers)
-    const legacyFixed = fixFrontmatter(content);
-    if (legacyFixed !== content) {
-      content = legacyFixed;
-      allChanges.push('frontmatter repaired');
+    // Only run if content doesn't already have valid frontmatter (avoid double-frontmatter)
+    const preLegacyFm = parseFrontmatter(content);
+    if (!preLegacyFm.found || preLegacyFm.error) {
+      const legacyFixed = fixFrontmatter(content);
+      if (legacyFixed !== content) {
+        content = legacyFixed;
+        allChanges.push('frontmatter repaired');
+      }
     }
     
     if (content !== original) {

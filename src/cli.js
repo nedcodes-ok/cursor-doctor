@@ -117,7 +117,7 @@ function requirePro(dir, cmd) {
     console.log(YELLOW + 'Pro feature' + RESET + ' — requires a license.');
   }
   console.log();
-  console.log('  ' + DIM + 'See what would be fixed (free):' + RESET + '  npx cursor-doctor lint');
+  console.log('  ' + DIM + 'Preview what would change (free):' + RESET + '  npx cursor-doctor fix --preview');
   console.log();
   console.log('  Pro key: $9 one-time — ' + CYAN + PURCHASE_URL + '?utm_source=cli&utm_medium=npx&utm_campaign=paywall' + RESET);
   console.log('  Then: ' + DIM + 'cursor-doctor activate <your-key>' + RESET);
@@ -1491,8 +1491,15 @@ async function main() {
       console.log('  ' + YELLOW + '!' + RESET + ' ' + results.deduped[i].fileA + ' + ' + results.deduped[i].fileB + ': ' + results.deduped[i].overlapPct + '% overlap (manual review)');
     }
     if (preview && totalActions > 0) {
+      // Count individual changes across all fixed files for accurate messaging
+      var totalChanges = 0;
+      for (var tci = 0; tci < results.fixed.length; tci++) {
+        var tcChanges = results.fixed[tci].changes || [];
+        totalChanges += tcChanges.length > 0 ? tcChanges.length : 1;
+      }
+      totalChanges += results.splits.length + results.merged.length + results.annotated.length + results.generated.length + results.deduped.length;
       console.log();
-      console.log('  ' + BOLD + totalActions + ' fix' + (totalActions > 1 ? 'es' : '') + ' available.' + RESET + '  Get Pro to apply them:');
+      console.log('  ' + BOLD + totalChanges + ' fix' + (totalChanges > 1 ? 'es' : '') + ' available.' + RESET + '  Get Pro to apply them:');
       console.log('  ' + CYAN + PURCHASE_URL + '?utm_source=cli&utm_medium=npx&utm_campaign=fix-preview' + RESET);
       console.log('  ' + DIM + 'Full refund if it doesn\'t find real issues.' + RESET);
     } else if (!dryRun && totalActions > 0) {

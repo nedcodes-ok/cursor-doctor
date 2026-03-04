@@ -98,6 +98,33 @@ cp scripts/pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-c
 
 The hook runs `cursor-doctor check` only when `.mdc`, `.cursorrules`, `CLAUDE.md`, or `AGENTS.md` files are staged.
 
+## README Badge
+
+Show your project's Cursor rules health in your README:
+
+**Static badge** (update manually):
+
+```markdown
+![Cursor Rules](https://img.shields.io/badge/Cursor_Rules-A-brightgreen)
+```
+
+![Cursor Rules](https://img.shields.io/badge/Cursor_Rules-A-brightgreen)
+
+**Dynamic badge** (using shields.io endpoint):
+
+```bash
+# Generate badge JSON
+./scripts/generate-badge.sh
+
+# Commit .cursor-doctor-badge.json to your repo
+git add .cursor-doctor-badge.json && git commit -m "chore: update cursor rules health badge"
+
+# Use in README.md (replace YOUR_REPO_URL)
+![Cursor Rules Health](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/YOUR_REPO_URL/main/.cursor-doctor-badge.json)
+```
+
+The badge color reflects your grade: A=brightgreen, B=green, C=yellow, D=orange, F=red.
+
 ## MCP Server
 
 Use cursor-doctor as an MCP tool inside your AI coding assistant:

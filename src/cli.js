@@ -78,7 +78,9 @@ function getStarCTA() {
       url: 'https://github.com/nedcodes-ok/cursor-doctor?utm_source=cli&utm_medium=star_cta&utm_campaign=variant_c'
     }
   ];
-  var index = Math.floor(Math.random() * 3);
+  var index = process.env.CURSOR_DOCTOR_CTA_VARIANT
+    ? parseInt(process.env.CURSOR_DOCTOR_CTA_VARIANT, 10)
+    : Math.floor(Math.random() * 3);
   return variants[index];
 }
 
